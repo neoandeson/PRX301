@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xmlns="http://xml.netbeans.org/schema/animal"
+     xsi:schemaLocation="http://xml.netbeans.org/schema/animal animal.xsd">
+    <Species>Dog</Species>
+    <Bred>Husky</Bred>
+    <Price>
+        <Worth>15000000</Worth>
+    </Price>
+    <Age>
+        <Number>1</Number>
+        <TimeType>Year</TimeType>        
+    </Age>
+    <Sex>1</Sex>
+    <Color>Black</Color>
+    <Description></Description>
+</dog>

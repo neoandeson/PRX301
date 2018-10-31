@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<xs:schema version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://xml.netbeans.org/schema/animal"
+           xmlns="http://xml.netbeans.org/schema/animal"
+           elementFormDefault="qualified">
+    <xs:element name="animal">
+        <xs:complexType>
+            <element name="name" type="xs:string"></element>
+            <element name="weight" type="xs:string"></element>
+            <element name="age" type="xs:string"></element>
+            <element name="color" type="xs:string"></element>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

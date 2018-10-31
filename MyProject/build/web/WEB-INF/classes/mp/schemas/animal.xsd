@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<xs:schema version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://xml.netbeans.org/schema/animal"
+           xmlns="http://xml.netbeans.org/schema/animal"
+           elementFormDefault="qualified">
+    <xs:group name="groupMammal">
+        <xs:sequence>
+            <xs:element name="Bred" type="xs:string"/>
+            <xs:element name="Price">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="Worth" type="xs:positiveInteger"/>
+                        <xs:element name="Contact" type="xs:string"/>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Age">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="Number" type="xs:positiveInteger"/>
+                        <xs:element name="TimeType">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="Month"/>
+                                    <xs:enumeration value="Year"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="Sex" type="xs:boolean"/>
+            <xs:element name="Color" type="xs:string"/>
+            <xs:element name="Description" type="xs:string"/>
+        </xs:sequence>
+    </xs:group>
+    
+    <xs:element name="dog">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Species" type="xs:string" fixed="Dog"/>
+                <xs:group ref="groupMammal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="cat">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Species" type="xs:string" fixed="Cat"/>
+                <xs:group ref="groupMammal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

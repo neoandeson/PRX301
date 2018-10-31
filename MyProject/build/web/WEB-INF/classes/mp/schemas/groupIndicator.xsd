@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<xs:schema version="1.0"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://xml.netbeans.org/schema/groupIndicator"
+           xmlns="http://xml.netbeans.org/schema/groupIndicator"
+           elementFormDefault="qualified">
+    <xs:group name="person">
+        <xs:sequence>
+            <xs:element name="FirstName" type="xs:string"/>
+            <xs:element name="MiddleName" type="xs:string" minOccurs="0"/>
+            <xs:element name="LastName" type="xs:string"/>
+        </xs:sequence>
+    </xs:group>
+    <xs:attributeGroup name="attGroupPerson">
+        <xs:attribute name="Title">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Mr."/>
+                    <xs:enumeration value="Mrs."/>
+                    <xs:enumeration value="Dr."/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="BirthYear" type="xs:gYear"/>
+    </xs:attributeGroup>
+    
+    <xs:element name="Book">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Title" type="xs:string"/>
+                <xs:element name="Author">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:group ref="person"/>
+                            <xs:element name="Specialty">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="abc"/>
+                                        <xs:enumeration value="def"/>
+                                        <xs:enumeration value="ghi"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:element>
+                        </xs:sequence>
+                        <xs:attributeGroup ref="attGroupPerson"/>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Illustrator" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:group ref="person"/>
+                        </xs:sequence>
+                        <xs:attributeGroup ref="attGroupPerson"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
