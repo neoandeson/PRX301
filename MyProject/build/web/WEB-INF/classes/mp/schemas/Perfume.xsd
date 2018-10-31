@@ -10,7 +10,7 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="Type" type="xs:string" fixed="Perfume"></xs:element>
-                <xs:element name="Concentration" type="xs:positiveInteger"></xs:element>
+                <xs:element name="Concentration" type="xs:string"></xs:element>
                 <xs:element name="Release">
                     <xs:simpleType>
                         <xs:restriction base="xs:integer">

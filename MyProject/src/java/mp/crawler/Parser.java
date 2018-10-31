@@ -8,11 +8,9 @@ package mp.crawler;
 import com.sun.xml.internal.fastinfoset.stax.events.EndElementEvent;
 import com.sun.xml.internal.stream.events.XMLEventAllocatorImpl;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -25,18 +23,13 @@ import java.util.logging.Logger;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
-import javax.xml.stream.util.XMLEventAllocator;
-import javax.xml.transform.stream.StreamSource;
 import mp.Utils.Constant;
-import mp.crawler.Downloader;
 
 /**
  *
@@ -98,62 +91,21 @@ public abstract class Parser {
         }
     }
 
+    /**
+     * Read HTML file to convert
+     * TODO: implement to each parser
+     * @param String inputFilePath
+     */
     public abstract void parsingHTML(String filePath);
 
     /**
      * Processing and writing well-formed temporary file
-     *
-     * @param String inputFilePath
+     * TODO: implement to each parser
+     * @param InputStreamReader isr
      * @param String outputFilePath
      */
-    public void addMissingEndTag(String inputFilePath, String outputFilePath) {
-        try {
-            XMLInputFactory fact = XMLInputFactory.newInstance();
-            fact.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
-            fact.setProperty(XMLInputFactory.IS_VALIDATING, false);
-
-            XMLEventReader reader = fact.createXMLEventReader(new InputStreamReader(new FileInputStream(inputFilePath), "UTF-8"));
-            Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(String.format("%s\\%s", Constant.PATH_HTML, "cho.html")), "UTF-8"));
-            int endTagMarker = 0;
-            while (endTagMarker >= 0) {
-                XMLEvent event = null;
-                try {
-                    event = reader.nextEvent();
-                    writer.write(event.toString() + "\n");
-                } catch (XMLStreamException e) {
-                    String msg = e.getMessage();
-                    String msgErrorString = "The element type \"";
-                    if (msg.contains(msgErrorString)) {
-                        String missingTagName = msg.substring(msg.indexOf(msgErrorString) + msgErrorString.length(), msg.indexOf("\" must be terminated"));
-                        EndElement missingTag = new EndElementEvent(new QName(missingTagName));
-
-                    }
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                    break;
-                } catch (IOException ex) {
-                    Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-                }
-
-                if (event != null) {
-                    if (event.isStartElement()) {
-                        endTagMarker++;
-                    } else if (event.isEndElement()) {
-                        endTagMarker--;
-                    }
-                    if (endTagMarker >= 0) {
-                        //
-                    }
-                }
-            }
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (XMLStreamException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
+    public abstract void cleanHTML(InputStreamReader isr, String outputFilePath);
+    
 
     public Iterator<XMLEvent> autoAddMissingEndTag(XMLEventReader reader) {
         ArrayList<XMLEvent> lEvents = new ArrayList<>();
@@ -189,28 +141,12 @@ public abstract class Parser {
         return lEvents.iterator();
     }
 
-    public void parseHTML(String filePath) {
-        XMLInputFactory fact = XMLInputFactory.newInstance();
-        fact.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
-        fact.setProperty(XMLInputFactory.IS_VALIDATING, false);
-
-        //XMLEventReader reader;
-        XMLEventReader reader = null;
-        String detail = "";
-
-        try {
-            reader = fact.createXMLEventReader(new InputStreamReader(new FileInputStream(filePath), "UTF-8"));
-            detail = takeAbsoluteContentFromreader(reader);
-            System.out.println("Content: " + detail);
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (XMLStreamException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
+    /**
+     * Get absolute content from tag 
+     * 
+     * @param XMLEventReader eventReader
+     * @return String
+     */
     protected String takeAbsoluteContentFromreader(XMLEventReader eventReader) {
         String result = "";
         int depth = 0;
@@ -254,6 +190,7 @@ public abstract class Parser {
         return result.substring(0, result.length() - 1);
     }
 
+    //TODO Unecessary remove
     public void parseHTML(String filePath, String desTag, String desAttr, String desAttrContent) {
         XMLInputFactory fact = XMLInputFactory.newInstance();
         fact.setProperty(XMLInputFactory.IS_REPLACING_ENTITY_REFERENCES, false);
@@ -322,8 +259,8 @@ public abstract class Parser {
         }
     }
 
-    //TODO simplify
-    public void cleanHTML(InputStreamReader isr) throws XMLStreamException {
+    //TODO OK simplifying if ok remove duplicated
+    public void cleanHTML1(InputStreamReader isr) throws XMLStreamException {
         Writer writer = null;
         try {
             XMLInputFactory xif = XMLInputFactory.newInstance();

@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="Brand" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="Name" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Sex" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Sex" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
  *         &lt;element name="Origin" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="Price" type="{http://www.w3.org/2001/XMLSchema}positiveInteger"/>
  *         &lt;element name="ImageURL" type="{http://www.w3.org/2001/XMLSchema}string"/>
@@ -50,8 +50,8 @@ public class Product {
     protected String brand;
     @XmlElement(name = "Name", namespace = "http://xml.netbeans.org/schema/product", required = true)
     protected String name;
-    @XmlElement(name = "Sex", namespace = "http://xml.netbeans.org/schema/product", required = true)
-    protected String sex;
+    @XmlElement(name = "Sex", namespace = "http://xml.netbeans.org/schema/product")
+    protected boolean sex;
     @XmlElement(name = "Origin", namespace = "http://xml.netbeans.org/schema/product", required = true)
     protected String origin;
     @XmlElement(name = "Price", namespace = "http://xml.netbeans.org/schema/product", required = true)
@@ -111,24 +111,16 @@ public class Product {
     /**
      * Gets the value of the sex property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
      */
-    public String getSex() {
+    public boolean isSex() {
         return sex;
     }
 
     /**
      * Sets the value of the sex property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
      */
-    public void setSex(String value) {
+    public void setSex(boolean value) {
         this.sex = value;
     }
 

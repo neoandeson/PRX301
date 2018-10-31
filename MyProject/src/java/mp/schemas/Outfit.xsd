@@ -10,18 +10,9 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="Type" type="xs:string"></xs:element>
-                <xs:element name="Concentration" type="xs:positiveInteger"></xs:element>
-                <xs:element name="Release">
-                    <xs:simpleType>
-                        <xs:restriction base="xs:integer">
-                            <xs:minInclusive value="1900"/>
-                            <xs:maxExclusive value="2018"/>
-                        </xs:restriction>
-                    </xs:simpleType>
-                </xs:element>
-                <xs:element name="Incense" type="xs:string"></xs:element>
+                <xs:element name="Color" type="xs:string"></xs:element>
                 <xs:element name="Style" type="xs:string"></xs:element>
-                <xs:element name="Description" type="xs:string"></xs:element>
+                <xs:element name="Material" type="xs:string"></xs:element>
                 <xs:element ref="pd:Product"></xs:element>
             </xs:sequence>
         </xs:complexType>

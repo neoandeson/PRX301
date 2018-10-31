@@ -9,7 +9,7 @@
             <xs:sequence>
                 <xs:element name="Brand" type="xs:string"></xs:element>
                 <xs:element name="Name" type="xs:string"></xs:element>
-                <xs:element name="Sex" type="xs:string"></xs:element>
+                <xs:element name="Sex" type="xs:boolean"></xs:element>
                 <xs:element name="Origin" type="xs:string"></xs:element>
                 <xs:element name="Price" type="xs:positiveInteger"></xs:element>
                 <xs:element name="ImageURL" type="xs:string"></xs:element>

@@ -1,20 +1,21 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mp.crawler;
 
 import com.sun.xml.internal.stream.events.XMLEventAllocatorImpl;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.namespace.QName;
@@ -26,22 +27,15 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import mp.Utils.Constant;
+import mp.Utils.MyUtils;
 
-/**
- *
- * @author ASUS
- */
-public class ParsePage {
+public class TGNHCrawler {
 
     public static void main(String[] args) {
-//        Parser parser = new Parser();
-//        //parser.parseHTML(Constant.HTML_PATH + "/" + Constant.NAME_THEGIOINUOCHOA_MALE);
-//        //parser.parseHTMLToXML(Constant.HTML_PATH + "/" + Constant.NAME_THEGIOINUOCHOA_MALE, "div", "class", "product-item");
-//        parser.parseHTML(Constant.HTML_PATH + "/" + Constant.NAME_THEGIOINUOCHOA_MALE, "div", "class", "product-item");
-        parseTheGioiNuocHoa();
+        crawlingTGNH(Constant.GET_URL_THEGIOINUOCHOA_MALE, Constant.PATH_HTML, "", "");
     }
 
-    public static void parseTheGioiNuocHoa() {
+    public static void crawlingTGNH(String htmlURL, String filePath, String startTagProp, String endTagProp) {
         Parser parser = new Parser() {
             @Override
             public void parsingHTML(String filePath) {
@@ -81,6 +75,7 @@ public class ParsePage {
                                 Attribute sourceAtt = ele.getAttributeByName(new QName("src"));
                                 detail = sourceAtt.getValue();
                                 System.out.println("img: " + detail);
+                                //TODO lay png dau thoi
                                 inDivImage = false;
                             }
 
@@ -112,7 +107,7 @@ public class ParsePage {
                             if (ele.getName().toString().equals("p") && inDivDescription) {
                                 detail = takeAbsoluteContentFromreader(reader);
                                 System.out.println("desc: " + detail);
-                                inUlInfo = false;
+                                inDivDescription = false;
                             }
 
                         }//end if start element
@@ -125,11 +120,7 @@ public class ParsePage {
                             }
                         }//end if end element
                     }
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (UnsupportedEncodingException ex) {
-                    Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (XMLStreamException ex) {
+                } catch (FileNotFoundException | UnsupportedEncodingException | XMLStreamException ex) {
                     Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -137,10 +128,10 @@ public class ParsePage {
             @Override
             public void cleanHTML(InputStreamReader isr, String outputFilePath) {
                 Writer writer = null;
+                XMLEventReader reader = null;
                 try {
                     XMLInputFactory xif = XMLInputFactory.newInstance();
                     xif.setEventAllocator(new XMLEventAllocatorImpl());
-                    XMLEventReader reader = null;
                     reader = xif.createXMLEventReader(isr);
                     writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFilePath), "UTF-8"));
 
@@ -211,30 +202,155 @@ public class ParsePage {
                     }
                 } catch (UnsupportedEncodingException ex) {
                     Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (FileNotFoundException ex) {
-                    Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (XMLStreamException ex) {
                     Logger.getLogger(ParsePage.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (FileNotFoundException ex) {
+                    Logger.getLogger(TGNHCrawler.class.getName()).log(Level.SEVERE, null, ex);
                 } finally {
                     try {
                         writer.close();
+                        reader.close();
                     } catch (IOException ex) {
                         Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (XMLStreamException ex) {
+                        Logger.getLogger(TGNHCrawler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
 
             }
         };
-        
-        //Clean HTML before parse
-        try {
-            parser.cleanHTML(new InputStreamReader(new FileInputStream(Constant.PATH_HTML + "/" + Constant.NAME_THEGIOINUOCHOA_PAGE), "UTF-8"),
-                    Constant.PATH_HTML + "/" + Constant.NAME_BUFFERED_PAGE);
-        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            Logger.getLogger(ParsePage.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        parser.parsingHTML(Constant.PATH_HTML + "/" + Constant.NAME_BUFFERED_PAGE);
-    }
 
+        Downloader downloader = new Downloader(htmlURL, filePath, startTagProp, endTagProp) {
+            @Override
+            public void analysMainHTML() {
+                URL url = null;
+                URLConnection con = null;
+                InputStream is = null;
+                BufferedReader br = null;
+                try {
+                    url = new URL(htmlURL);
+                    con = url.openConnection();
+                    con.addRequestProperty("User-agent", Constant.USER_AGENT);
+                    is = con.getInputStream();
+                    br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+
+                    String inputLine;
+                    ArrayList<String> matchedGroup;
+
+                    while ((inputLine = br.readLine()) != null) {
+                        matchedGroup = MyUtils.getGroupLineByPattern(inputLine, "<a class=\"product-name pro-color\"[a-zA-Z0-9 \\/\\-\\.\\=\\\"\\>]*</a>");
+                        int count = 0;
+                        for (String mg : matchedGroup) {
+                            //get href content
+                            mg = MyUtils.getLineByPattern(mg, "[\\/]+.*html");
+                            downloadHTML(Constant.GET_PRE_THEGIOINUOCHOA + mg, Constant.NAME_THEGIOINUOCHOA_PAGE);
+                            break;//TODO remove
+                        }
+                    }
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    if (br != null) {
+                        try {
+                            br.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(DownloadPage.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(DownloadPage.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void downloadHTML(String pageUrl, String fileName) {
+                URL url = null;
+                URLConnection con = null;
+                InputStream is = null;
+                BufferedReader br = null;
+                Writer writer = null;
+                try {
+                    url = new URL(pageUrl);
+                    con = url.openConnection();
+                    con.addRequestProperty("User-agent", Constant.USER_AGENT);
+                    is = con.getInputStream();
+                    br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                    writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(String.format("%s\\%s", filePath, fileName)), "UTF-8"));
+
+                    String inputLine;
+                    boolean inTarget = false;
+
+                    while ((inputLine = br.readLine()) != null) {
+                        if (inputLine.contains("<!-- End product-detail -->")) {
+                            inputLine = inputLine.substring(0, inputLine.lastIndexOf("</section>") + 10).trim();
+                            inputLine = MyUtils.modifyToBeautifulHTML(inputLine);
+                            writer.write(inputLine);
+                            inTarget = false;
+                        }
+                        if (inputLine.contains("<section class=\"product-detail perfume-detail\">")) {
+                            inputLine = inputLine.substring(inputLine.indexOf("<section class=\"product-detail perfume-detail\">"), inputLine.length()).trim();
+                            inputLine = MyUtils.modifyToBeautifulHTML(inputLine);
+                            inTarget = true;
+                        }
+                        if (inTarget) {
+                            inputLine = MyUtils.modifyToBeautifulHTML(inputLine);
+                            writer.write(inputLine.trim());
+                        }
+                    }
+                    writer.close();
+                    
+                    //Begin parse page to Object--------------------------------
+                    //Clean HTML before parse
+                    try {
+                        parser.cleanHTML(new InputStreamReader(new FileInputStream(Constant.PATH_HTML + "/" + Constant.NAME_THEGIOINUOCHOA_PAGE), "UTF-8"),
+                                Constant.PATH_HTML + "/" + Constant.NAME_BUFFERED_PAGE);
+                    } catch (FileNotFoundException | UnsupportedEncodingException ex) {
+                        Logger.getLogger(ParsePage.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    //Prasing
+                    parser.parsingHTML(Constant.PATH_HTML + "/" + Constant.NAME_BUFFERED_PAGE);
+                    //End parsing-----------------------------------------------
+                    
+                } catch (MalformedURLException ex) {
+                    Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
+                } finally {
+                    if (writer != null) {
+                        try {
+                            writer.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(DownloadPage.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    if (br != null) {
+                        try {
+                            br.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(DownloadPage.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    if (is != null) {
+                        try {
+                            is.close();
+                        } catch (IOException ex) {
+                            Logger.getLogger(DownloadPage.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+
+        };
+
+        //analys get detail page hrefs and download detail pages
+        downloader.analysMainHTML();
+
+    }
 }

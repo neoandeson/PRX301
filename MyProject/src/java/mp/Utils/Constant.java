@@ -23,15 +23,15 @@ public class Constant {
     public static final String GET_URL_SHEIN = "https://www.shein.com.vn/Women-Bags-c-2043.html?icn=womenbags&ici=vn_navbar07menu01";
     public static final String GET_URL_ROBIN = "https://www.robins.vn/men/phu-kien/";
 
-    //html file name
-    public static String MAIN_PAGE = "cho.html";
-    public static String NAME_THEGIOINUOCHOA_MALE = "thegioinuochoa_male.html";
-    public static String NAME_THEGIOINUOCHOA_FEMALE = "thegioinuochoa_female.html";
+    //HTML file name
+    public static final String MAIN_PAGE = "cho.html";
+    public static final String NAME_BUFFERED_PAGE = "buffered.html";
+    public static final String NAME_THEGIOINUOCHOA_PAGE = "thegioinuochoa.html";
 
     //File path
     public static final String PATH_HTML = "src/java/mp/htmlFiles";
-    public static String PATH_IMAGE = "content/imgs/";
-    public static String PATH_SCHEMA = "src/java/mp/schemas/";
+    public static final String PATH_IMAGE = "content/imgs/";
+    public static final String PATH_SCHEMA = "src/java/mp/schemas/";
 
     //html path
     public static final String HTML_DETAIL_PATH = "src/java/mp/html/detail";

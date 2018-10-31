@@ -26,7 +26,7 @@ public class ParsePage {
     public static void main(String[] args) {
         BufferedReader br = null;
         try {
-            File file = new File(Constant.PATH_HTML + "/" + Constant.NAME_THEGIOINUOCHOA_MALE);
+            File file = new File(Constant.PATH_HTML + "/" + Constant.NAME_THEGIOINUOCHOA_PAGE);
             br = new BufferedReader(new FileReader(file));
             String st;
             while ((st = br.readLine()) != null) {
@@ -53,6 +53,6 @@ public class ParsePage {
 
     public static void parseTheGioiNuocHoa() {
         Parser parser = new Parser();
-        parser.parseHTML(Constant.PATH_HTML + "/" + Constant.NAME_THEGIOINUOCHOA_MALE, "div", "class", "product-item");
+        parser.parseHTML(Constant.PATH_HTML + "/" + Constant.NAME_THEGIOINUOCHOA_PAGE, "div", "class", "product-item");
     }
 }

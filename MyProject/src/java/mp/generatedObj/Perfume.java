@@ -1,12 +1,10 @@
 
 package mp.generatedObj;
 
-import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -21,7 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="Type" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Concentration" type="{http://www.w3.org/2001/XMLSchema}positiveInteger"/>
+ *         &lt;element name="Concentration" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="Release">
  *           &lt;simpleType>
  *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}integer">
@@ -58,8 +56,7 @@ public class Perfume {
     @XmlElement(name = "Type", required = true)
     protected String type;
     @XmlElement(name = "Concentration", required = true)
-    @XmlSchemaType(name = "positiveInteger")
-    protected BigInteger concentration;
+    protected String concentration;
     @XmlElement(name = "Release")
     protected int release;
     @XmlElement(name = "Incense", required = true)
@@ -100,10 +97,10 @@ public class Perfume {
      * 
      * @return
      *     possible object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
-    public BigInteger getConcentration() {
+    public String getConcentration() {
         return concentration;
     }
 
@@ -112,10 +109,10 @@ public class Perfume {
      * 
      * @param value
      *     allowed object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
-    public void setConcentration(BigInteger value) {
+    public void setConcentration(String value) {
         this.concentration = value;
     }
 

@@ -29,7 +29,7 @@ import mp.Utils.MyUtils;
 public class DownloadPage {
 
     public static void main(String[] args) {
-        //TODO: chinh sua ket hop bo parse trong luc crawl luon luu dung 1 file
+        //DOING: chinh sua ket hop bo parse trong luc crawl luon luu dung 1 file 
         downloadingTheGioiNuocHoa2(Constant.GET_URL_THEGIOINUOCHOA_MALE, Constant.PATH_HTML, "", "");
     }
 
@@ -59,8 +59,7 @@ public class DownloadPage {
                         for (String mg : matchedGroup) {
                             //get href content
                             mg = MyUtils.getLineByPattern(mg, "[\\/]+.*html");
-                            downloadHTML(Constant.GET_PRE_THEGIOINUOCHOA + mg, "tgnhMale" + count++ + ".html");
-                            break;//TODO Remove
+                            downloadHTML(Constant.GET_PRE_THEGIOINUOCHOA + mg, "tgnhMale.html");
                         }
                     }
                 } catch (MalformedURLException ex) {

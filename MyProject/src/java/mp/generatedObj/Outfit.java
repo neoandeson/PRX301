@@ -1,12 +1,10 @@
 
 package mp.generatedObj;
 
-import java.math.BigInteger;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -21,18 +19,9 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="Type" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Concentration" type="{http://www.w3.org/2001/XMLSchema}positiveInteger"/>
- *         &lt;element name="Release">
- *           &lt;simpleType>
- *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}integer">
- *               &lt;minInclusive value="1900"/>
- *               &lt;maxExclusive value="2018"/>
- *             &lt;/restriction>
- *           &lt;/simpleType>
- *         &lt;/element>
- *         &lt;element name="Incense" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Color" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="Style" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Material" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element ref="{http://xml.netbeans.org/schema/product}Product"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -45,11 +34,9 @@ import javax.xml.bind.annotation.XmlType;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "type",
-    "concentration",
-    "release",
-    "incense",
+    "color",
     "style",
-    "description",
+    "material",
     "product"
 })
 @XmlRootElement(name = "Outfit", namespace = "http://xml.netbeans.org/schema/outfit")
@@ -57,17 +44,12 @@ public class Outfit {
 
     @XmlElement(name = "Type", namespace = "http://xml.netbeans.org/schema/outfit", required = true)
     protected String type;
-    @XmlElement(name = "Concentration", namespace = "http://xml.netbeans.org/schema/outfit", required = true)
-    @XmlSchemaType(name = "positiveInteger")
-    protected BigInteger concentration;
-    @XmlElement(name = "Release", namespace = "http://xml.netbeans.org/schema/outfit")
-    protected int release;
-    @XmlElement(name = "Incense", namespace = "http://xml.netbeans.org/schema/outfit", required = true)
-    protected String incense;
+    @XmlElement(name = "Color", namespace = "http://xml.netbeans.org/schema/outfit", required = true)
+    protected String color;
     @XmlElement(name = "Style", namespace = "http://xml.netbeans.org/schema/outfit", required = true)
     protected String style;
-    @XmlElement(name = "Description", namespace = "http://xml.netbeans.org/schema/outfit", required = true)
-    protected String description;
+    @XmlElement(name = "Material", namespace = "http://xml.netbeans.org/schema/outfit", required = true)
+    protected String material;
     @XmlElement(name = "Product", namespace = "http://xml.netbeans.org/schema/product", required = true)
     protected Product product;
 
@@ -96,67 +78,27 @@ public class Outfit {
     }
 
     /**
-     * Gets the value of the concentration property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
-     */
-    public BigInteger getConcentration() {
-        return concentration;
-    }
-
-    /**
-     * Sets the value of the concentration property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
-     */
-    public void setConcentration(BigInteger value) {
-        this.concentration = value;
-    }
-
-    /**
-     * Gets the value of the release property.
-     * 
-     */
-    public int getRelease() {
-        return release;
-    }
-
-    /**
-     * Sets the value of the release property.
-     * 
-     */
-    public void setRelease(int value) {
-        this.release = value;
-    }
-
-    /**
-     * Gets the value of the incense property.
+     * Gets the value of the color property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getIncense() {
-        return incense;
+    public String getColor() {
+        return color;
     }
 
     /**
-     * Sets the value of the incense property.
+     * Sets the value of the color property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setIncense(String value) {
-        this.incense = value;
+    public void setColor(String value) {
+        this.color = value;
     }
 
     /**
@@ -184,27 +126,27 @@ public class Outfit {
     }
 
     /**
-     * Gets the value of the description property.
+     * Gets the value of the material property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getDescription() {
-        return description;
+    public String getMaterial() {
+        return material;
     }
 
     /**
-     * Sets the value of the description property.
+     * Sets the value of the material property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setDescription(String value) {
-        this.description = value;
+    public void setMaterial(String value) {
+        this.material = value;
     }
 
     /**
