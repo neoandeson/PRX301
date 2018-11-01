@@ -15,7 +15,7 @@
                     <xs:simpleType>
                         <xs:restriction base="xs:integer">
                             <xs:minInclusive value="1900"/>
-                            <xs:maxExclusive value="2018"/>
+                            <xs:maxExclusive value="2019"/>
                         </xs:restriction>
                     </xs:simpleType>
                 </xs:element>

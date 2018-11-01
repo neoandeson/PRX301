@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  *           &lt;simpleType>
  *             &lt;restriction base="{http://www.w3.org/2001/XMLSchema}integer">
  *               &lt;minInclusive value="1900"/>
- *               &lt;maxExclusive value="2018"/>
+ *               &lt;maxExclusive value="2019"/>
  *             &lt;/restriction>
  *           &lt;/simpleType>
  *         &lt;/element>

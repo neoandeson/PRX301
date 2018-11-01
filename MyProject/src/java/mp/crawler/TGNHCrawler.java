@@ -28,6 +28,8 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import mp.Utils.Constant;
 import mp.Utils.MyUtils;
+import mp.generatedObj.Perfume;
+import mp.generatedObj.Product;
 
 public class TGNHCrawler {
 
@@ -45,6 +47,10 @@ public class TGNHCrawler {
 
                 XMLEventReader reader = null;
                 String detail = "";
+                Product product = new Product();
+                Perfume perfume = new Perfume();
+                perfume.setProduct(product);
+                perfume.setType("Perfume");
 
                 try {
                     reader = fact.createXMLEventReader(new InputStreamReader(new FileInputStream(filePath), "UTF-8"));
@@ -65,22 +71,26 @@ public class TGNHCrawler {
                                 Attribute attr = ele.getAttributeByName(new QName("class"));
                                 if (attr != null) {
                                     if (attr.getValue().equals("product-title")) {
-                                        System.out.println("Name: " + takeAbsoluteContentFromreader(reader));
+                                        //System.out.println("Name: " + takeAbsoluteContentFromreader(reader));
+                                        detail = takeAbsoluteContentFromreader(reader);
+                                        perfume.getProduct().setName(detail);
                                     }
                                 }
                             }
-                            
+
                             //Get price
                             if (ele.getName().toString().equals("div")) {
                                 Attribute attr = ele.getAttributeByName(new QName("class"));
                                 if (attr != null) {
                                     if (attr.getValue().equals("price") && !isGetFirstPrice) {
                                         isGetFirstPrice = true;
-                                        System.out.println("Price: " + takeAbsoluteContentFromreader(reader));
+                                        //System.out.println("Price: " + takeAbsoluteContentFromreader(reader));
+                                        detail = takeAbsoluteContentFromreader(reader);
+                                        perfume.getProduct().setPrice(MyUtils.parseStringMoneyToBigInt(detail));
                                     }
                                 }
                             }
-                            
+
                             //Get image
                             if (ele.getName().toString().equals("div")) {
                                 Attribute attr = ele.getAttributeByName(new QName("class"));
@@ -98,9 +108,11 @@ public class TGNHCrawler {
                                 Attribute sourceAtt = ele.getAttributeByName(new QName("src"));
                                 detail = sourceAtt.getValue();
                                 //only get first img
-                                if (detail.matches(".*[.png]") && !isGetFirstImg) {
+                                if (detail.matches(".*[.png|.jpg]") && !isGetFirstImg) {
                                     isGetFirstImg = true;
-                                    System.out.println("img: " + detail);
+                                    //System.out.println("img: " + detail);
+                                    //TODO downImage to local set imgURL
+                                    perfume.getProduct().setImageURL(detail);
                                 }
                                 inDivImage = false;
                             }
@@ -119,25 +131,32 @@ public class TGNHCrawler {
                                 detail = takeAbsoluteContentFromreader(reader);
                                 switch (detail) {
                                     case "Nhãn hiệu":
-                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        //System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        perfume.getProduct().setBrand(takeAbsoluteContentFromTargetReader(reader, 2));
                                         break;
                                     case "Giới tính":
-                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        //System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        perfume.getProduct().setSex(MyUtils.getBooleanSexValue(takeAbsoluteContentFromTargetReader(reader, 2)));
                                         break;
                                     case "Xuất xứ":
-                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        //System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        perfume.getProduct().setOrigin(takeAbsoluteContentFromTargetReader(reader, 2));
                                         break;
                                     case "Nồng độ":
-                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        //System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        perfume.setConcentration(takeAbsoluteContentFromTargetReader(reader, 2));
                                         break;
                                     case "Phát hành":
-                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        //System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        perfume.setRelease(MyUtils.parseStringToInt(takeAbsoluteContentFromTargetReader(reader, 2)));
                                         break;
                                     case "Nhóm hương":
-                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        //System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        perfume.setIncense(takeAbsoluteContentFromTargetReader(reader, 2));
                                         break;
                                     case "Phong cách":
-                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        //System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        perfume.setStyle(takeAbsoluteContentFromTargetReader(reader, 2));
                                         break;
                                     default:
                                         break;
@@ -157,7 +176,8 @@ public class TGNHCrawler {
                             }
                             if (ele.getName().toString().equals("p") && inDivDescription) {
                                 detail = takeAbsoluteContentFromreader(reader);
-                                System.out.println("desc: " + detail);
+                                //System.out.println("desc: " + detail);
+                                perfume.setDescription(detail);
                                 inDivDescription = false;
                             }
 
@@ -170,9 +190,16 @@ public class TGNHCrawler {
                                 inUlInfo = false;
                             }
                         }//end if end element
-                    }
+                    }//End while reader
+
+                    //Check validate before save to database
+                    MyUtils.validateXMLBeforeSaveToDatabase(perfume, Constant.PATH_XML + "/" + Constant.NAME_BUFFERED_PAGE_XML,
+                            Constant.PATH_SCHEMA + "/" + Constant.NAME_SCHEMA_PERFUME);
+
                 } catch (FileNotFoundException | UnsupportedEncodingException | XMLStreamException ex) {
                     Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(TGNHCrawler.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
@@ -188,6 +215,7 @@ public class TGNHCrawler {
 
                     boolean inPTag = false;
                     boolean inScriptTag = false;
+                    boolean isFirstSection = false;
                     String pContent = "";
 
                     if (reader != null) {
@@ -195,12 +223,21 @@ public class TGNHCrawler {
                             try {
                                 XMLEvent event = null;
                                 event = reader.nextEvent();
+                                
                                 if (event != null) {
                                     //System.out.println("event: " + event.toString());
                                     if (event.toString().contains("<?xml version")) {
                                         writer.write("<?xml version=\"1.0\" encoding='UTF-8' standalone='no'?>" + "\n");
                                     } else if (event.isStartElement()) {
                                         StartElement ele = (StartElement) event;
+                                        if (ele.getName().toString().equals("section")) {
+                                            if (isFirstSection){
+                                                break;
+                                            }
+                                            if (!isFirstSection) {
+                                                isFirstSection = true;
+                                            }
+                                        }
                                         if (ele.getName().toString().equals("p")) {
                                             inPTag = true;
                                             writer.write(event.toString());
@@ -295,7 +332,15 @@ public class TGNHCrawler {
                             //get href content
                             mg = MyUtils.getLineByPattern(mg, "[\\/]+.*html");
                             downloadHTML(Constant.GET_PRE_THEGIOINUOCHOA + mg, Constant.NAME_THEGIOINUOCHOA_PAGE);
+                            
                             break;//TODO remove
+//                            if (count++ == 2) {
+//                                //get href content
+//                                mg = MyUtils.getLineByPattern(mg, "[\\/]+.*html");
+//                                downloadHTML(Constant.GET_PRE_THEGIOINUOCHOA + mg, Constant.NAME_THEGIOINUOCHOA_PAGE);
+//                                break;
+//                            }
+
                         }
                     }
                 } catch (MalformedURLException ex) {
@@ -365,7 +410,7 @@ public class TGNHCrawler {
                     } catch (FileNotFoundException | UnsupportedEncodingException ex) {
                         Logger.getLogger(ParsePage.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                    //Prasing
+                    //Parsing
                     parser.parsingHTML(Constant.PATH_HTML + "/" + Constant.NAME_BUFFERED_PAGE);
                     //End parsing-----------------------------------------------
 

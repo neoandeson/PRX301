@@ -11,7 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import javax.naming.NamingException;
-import mp.Utils.DBUtil;
+import mp.utils.DBUtil;
 import mp.generatedObj.Perfume;
 
 /**
@@ -25,12 +25,12 @@ public class PerfumeDAO implements Serializable{
         ResultSet rs = null;
         
         try {
-            con = DBUtil.makeConnection();
+            con = DBUtil.createConnection();
             String sql = "INSERT INTO Perfume "
                     + "(Brand, Name, Sex, Origin, Price, ImageURL,"
                     + " Type, Concentration, Release, Incense,"
                     + " Style, Description) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,)";
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             smt = con.prepareStatement(sql);
             smt.setString(1, perfume.getProduct().getBrand());
             smt.setString(2, perfume.getProduct().getName());
@@ -47,6 +47,7 @@ public class PerfumeDAO implements Serializable{
             int result = smt.executeUpdate();
             
             if(result > 0) {
+                System.out.println("Perfume DAO inserted");
                 return true;
             }
         } finally {

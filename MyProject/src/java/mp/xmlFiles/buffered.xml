@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Perfume xmlns="http://xml.netbeans.org/schema/perfume" xmlns:ns2="http://xml.netbeans.org/schema/product">
+    <Type>Perfume</Type>
+    <Concentration>Eau de parfum</Concentration>
+    <Release>2009</Release>
+    <Incense>Hương Hoa cỏ Gỗ Xạ hương - Floral Woody Musk</Incense>
+    <Style>Nam tính, Quyến rũ, thu hút.</Style>
+    <Description>TGNH chào bạn!Bạn ơi hiện tại sản phẩm này có mùi hương dịu của phấn ,bạn có thể đến showroom tham khảo sản phẩm nha bạn.TGNH thân chào.</Description>
+    <ns2:Product>
+        <ns2:Brand>Narciso Rodriguez</ns2:Brand>
+        <ns2:Name>Narciso Rodriguez Musc Collection for men</ns2:Name>
+        <ns2:Sex>true</ns2:Sex>
+        <ns2:Origin>Mỹ</ns2:Origin>
+        <ns2:Price>2500000</ns2:Price>
+        <ns2:ImageURL>/uploads/products/2018/11/image/1541041269.0129.png</ns2:ImageURL>
+    </ns2:Product>
+</Perfume>

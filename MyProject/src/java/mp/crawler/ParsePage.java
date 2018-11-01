@@ -26,6 +26,9 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 import mp.Utils.Constant;
+import mp.Utils.MyUtils;
+import mp.generatedObj.Perfume;
+import mp.generatedObj.Product;
 
 /**
  *
@@ -34,11 +37,36 @@ import mp.Utils.Constant;
 public class ParsePage {
 
     public static void main(String[] args) {
-//        Parser parser = new Parser();
+        try {
+            //        Parser parser = new Parser();
 //        //parser.parseHTML(Constant.HTML_PATH + "/" + Constant.NAME_THEGIOINUOCHOA_MALE);
 //        //parser.parseHTMLToXML(Constant.HTML_PATH + "/" + Constant.NAME_THEGIOINUOCHOA_MALE, "div", "class", "product-item");
 //        parser.parseHTML(Constant.HTML_PATH + "/" + Constant.NAME_THEGIOINUOCHOA_MALE, "div", "class", "product-item");
-        parseTheGioiNuocHoa();
+
+            Perfume perfume = new Perfume();
+            Product product = new Product();
+            perfume.setProduct(product);
+            perfume.setType("Perfume");
+            perfume.getProduct().setName("GucciGang");
+            perfume.getProduct().setPrice(MyUtils.parseStringMoneyToBigInt("2.000.000"));
+            perfume.getProduct().setImageURL("abc/def.com");
+            perfume.getProduct().setBrand("Gucci");
+            perfume.getProduct().setSex(MyUtils.getBooleanSexValue("Nam"));
+            perfume.getProduct().setOrigin("France");
+            perfume.setConcentration("Eau de parfum");
+            perfume.setRelease(MyUtils.parseStringToInt("1999"));
+            perfume.setIncense("Nhóm gỗ");
+            perfume.setStyle("Thanh lịch");
+            perfume.setDescription("asdasdasdasdasdasda&ădawdasda");
+
+            MyUtils.validateXMLBeforeSaveToDatabase(perfume, Constant.PATH_XML + "/" + "temp.xml", Constant.PATH_SCHEMA + "Perfume.xsd");
+//OK TODO uncomment
+//parseTheGioiNuocHoa();
+        } catch (IOException ex) {
+            Logger.getLogger(ParsePage.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void parseTheGioiNuocHoa() {
@@ -225,7 +253,7 @@ public class ParsePage {
 
             }
         };
-        
+
         //Clean HTML before parse
         try {
             parser.cleanHTML(new InputStreamReader(new FileInputStream(Constant.PATH_HTML + "/" + Constant.NAME_THEGIOINUOCHOA_PAGE), "UTF-8"),
@@ -233,7 +261,7 @@ public class ParsePage {
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Logger.getLogger(ParsePage.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         parser.parsingHTML(Constant.PATH_HTML + "/" + Constant.NAME_BUFFERED_PAGE);
     }
 

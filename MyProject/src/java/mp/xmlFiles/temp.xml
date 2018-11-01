@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Perfume xmlns="http://xml.netbeans.org/schema/perfume" xmlns:ns2="http://xml.netbeans.org/schema/product">
+    <Type>Perfume</Type>
+    <Concentration>Eau de parfum</Concentration>
+    <Release>1999</Release>
+    <Incense>Nhóm gỗ</Incense>
+    <Style>Thanh lịch</Style>
+    <Description>asdasdasdasdasdasda&amp;ădawdasda</Description>
+    <ns2:Product>
+        <ns2:Brand>Gucci</ns2:Brand>
+        <ns2:Name>GucciGang</ns2:Name>
+        <ns2:Sex>true</ns2:Sex>
+        <ns2:Origin>France</ns2:Origin>
+        <ns2:Price>2000000</ns2:Price>
+        <ns2:ImageURL>abc/def.com</ns2:ImageURL>
+    </ns2:Product>
+</Perfume>

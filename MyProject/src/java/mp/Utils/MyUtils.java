@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -77,7 +78,7 @@ public class MyUtils {
 
         if (m.find()) {
             result = m.group(0).trim().replace(removeString, "");
-            System.out.println("result: " + result);
+            System.out.println("getLineByPattern() result: " + result);
             return result;
         }
         return result;
@@ -122,15 +123,15 @@ public class MyUtils {
         // beautify inputline
         line = line.trim();
         
-        if (line.matches(".*&[^;]+")) {
-            line = line.replaceAll("&", "&#38;");
-        }
+//        if (line.matches(".*&[^;]+")) {
+//            line = line.replaceAll("&", "&#38;");
+//        }
 
         if (line.contains("&amp;")) {
-            line = line.replace("&amp;", "&");
+            line = line.replaceAll("&amp;", "&");
         }
         if (line.contains("&")) {
-            line = line.replace("&", "&amp;");
+            line = line.replaceAll("&", "&amp;");
         }
 
         line = line.replace("&raquo;", "");
@@ -175,6 +176,8 @@ public class MyUtils {
     
     public static <T> void validateXMLBeforeSaveToDatabase(T obj, String xmlFilePath, String xsdPath) throws IOException{
         try {
+            marshall(obj, xmlFilePath);
+            
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = sf.newSchema(new File(xsdPath));
             InputSource source = new InputSource(new BufferedReader(new FileReader(xmlFilePath)));
@@ -193,7 +196,7 @@ public class MyUtils {
         }
     }
     
-    public <T> void marshall(T obj, String outputFilePath) {
+    public static <T> void marshall(T obj, String outputFilePath) {
         try {
             JAXBContext ctx = JAXBContext.newInstance(obj.getClass());
             Marshaller mar = ctx.createMarshaller();
@@ -206,7 +209,7 @@ public class MyUtils {
 
     }
 
-    public <T> void unmarshall(T obj, String inputFilePath) {
+    public static <T> void unmarshall(T obj, String inputFilePath) {
         try {
             JAXBContext jc = JAXBContext.newInstance(obj.getClass());
             Unmarshaller u = jc.createUnmarshaller();
@@ -218,4 +221,21 @@ public class MyUtils {
         }
     }
     
+    public static BigInteger parseStringMoneyToBigInt(String strMoney) throws NumberFormatException{
+        strMoney = strMoney.replaceAll("[.]", "");
+        return BigInteger.valueOf(Integer.parseInt(strMoney));
+    }
+    
+    public static int parseStringToInt(String str){
+        try {
+            int tmp = Integer.parseInt(str);
+            return tmp;
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+    
+    public static boolean getBooleanSexValue(String strSex) {
+        return strSex.toLowerCase().equals("nam") ? true : false;
+    }
 }

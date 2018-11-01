@@ -26,10 +26,13 @@ public class Constant {
     //HTML file name
     public static final String MAIN_PAGE = "cho.html";
     public static final String NAME_BUFFERED_PAGE = "buffered.html";
+    public static final String NAME_BUFFERED_PAGE_XML = "buffered.xml";
     public static final String NAME_THEGIOINUOCHOA_PAGE = "thegioinuochoa.html";
+    public static final String NAME_SCHEMA_PERFUME = "Perfume.xsd";
 
     //File path
     public static final String PATH_HTML = "src/java/mp/htmlFiles";
+    public static final String PATH_XML = "src/java/mp/xmlFiles";
     public static final String PATH_IMAGE = "content/imgs/";
     public static final String PATH_SCHEMA = "src/java/mp/schemas/";
 
