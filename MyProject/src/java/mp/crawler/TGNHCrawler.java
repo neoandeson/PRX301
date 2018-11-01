@@ -51,6 +51,8 @@ public class TGNHCrawler {
                     boolean inDivImage = false;
                     boolean inUlInfo = false;
                     boolean inDivDescription = false;
+                    boolean isGetFirstImg = false;
+                    boolean isGetFirstPrice = false;
 
                     while (reader.hasNext()) {
                         XMLEvent event = reader.nextEvent();
@@ -58,6 +60,27 @@ public class TGNHCrawler {
                         if (event.isStartElement()) {
                             StartElement ele = (StartElement) event;
 
+                            //Get name
+                            if (ele.getName().toString().equals("h3")) {
+                                Attribute attr = ele.getAttributeByName(new QName("class"));
+                                if (attr != null) {
+                                    if (attr.getValue().equals("product-title")) {
+                                        System.out.println("Name: " + takeAbsoluteContentFromreader(reader));
+                                    }
+                                }
+                            }
+                            
+                            //Get price
+                            if (ele.getName().toString().equals("div")) {
+                                Attribute attr = ele.getAttributeByName(new QName("class"));
+                                if (attr != null) {
+                                    if (attr.getValue().equals("price") && !isGetFirstPrice) {
+                                        isGetFirstPrice = true;
+                                        System.out.println("Price: " + takeAbsoluteContentFromreader(reader));
+                                    }
+                                }
+                            }
+                            
                             //Get image
                             if (ele.getName().toString().equals("div")) {
                                 Attribute attr = ele.getAttributeByName(new QName("class"));
@@ -74,8 +97,11 @@ public class TGNHCrawler {
                             if (ele.getName().toString().equals("img") && inDivImage) {
                                 Attribute sourceAtt = ele.getAttributeByName(new QName("src"));
                                 detail = sourceAtt.getValue();
-                                System.out.println("img: " + detail);
-                                //TODO lay png dau thoi
+                                //only get first img
+                                if (detail.matches(".*[.png]") && !isGetFirstImg) {
+                                    isGetFirstImg = true;
+                                    System.out.println("img: " + detail);
+                                }
                                 inDivImage = false;
                             }
 
@@ -91,7 +117,32 @@ public class TGNHCrawler {
                             }
                             if (ele.getName().toString().equals("span") && inUlInfo) {
                                 detail = takeAbsoluteContentFromreader(reader);
-                                System.out.println("info: " + detail);
+                                switch (detail) {
+                                    case "Nhãn hiệu":
+                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        break;
+                                    case "Giới tính":
+                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        break;
+                                    case "Xuất xứ":
+                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        break;
+                                    case "Nồng độ":
+                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        break;
+                                    case "Phát hành":
+                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        break;
+                                    case "Nhóm hương":
+                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        break;
+                                    case "Phong cách":
+                                        System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        break;
+                                    default:
+                                        break;
+                                }
+                                //System.out.println("info: " + detail);
                             }
 
                             //Get desc
@@ -305,7 +356,7 @@ public class TGNHCrawler {
                         }
                     }
                     writer.close();
-                    
+
                     //Begin parse page to Object--------------------------------
                     //Clean HTML before parse
                     try {
@@ -317,7 +368,7 @@ public class TGNHCrawler {
                     //Prasing
                     parser.parsingHTML(Constant.PATH_HTML + "/" + Constant.NAME_BUFFERED_PAGE);
                     //End parsing-----------------------------------------------
-                    
+
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {

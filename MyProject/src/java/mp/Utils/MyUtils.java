@@ -5,16 +5,31 @@
  */
 package mp.Utils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.naming.NamingException;
+import javax.xml.XMLConstants;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
+import mp.DAO.PerfumeDAO;
+import mp.generatedObj.Perfume;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -157,5 +172,50 @@ public class MyUtils {
         
         return line;
     }
+    
+    public static <T> void validateXMLBeforeSaveToDatabase(T obj, String xmlFilePath, String xsdPath) throws IOException{
+        try {
+            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = sf.newSchema(new File(xsdPath));
+            InputSource source = new InputSource(new BufferedReader(new FileReader(xmlFilePath)));
+            Validator validator = schema.newValidator();
+            validator.validate(new SAXSource(source));
+            saveToDB(obj);
+        } catch (SAXException | FileNotFoundException | SQLException | NamingException ex) {
+            Logger.getLogger(MyUtils.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static <T> void saveToDB(T obj) throws SQLException, NamingException {
+        if(obj.getClass() == Perfume.class){
+            PerfumeDAO dao = new PerfumeDAO();
+            dao.insert((Perfume)obj);
+        }
+    }
+    
+    public <T> void marshall(T obj, String outputFilePath) {
+        try {
+            JAXBContext ctx = JAXBContext.newInstance(obj.getClass());
+            Marshaller mar = ctx.createMarshaller();
+            mar.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+            mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            mar.marshal(obj, new File(outputFilePath));
+        } catch (JAXBException ex) {
+            Logger.getLogger(Marshaller.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
+    }
+
+    public <T> void unmarshall(T obj, String inputFilePath) {
+        try {
+            JAXBContext jc = JAXBContext.newInstance(obj.getClass());
+            Unmarshaller u = jc.createUnmarshaller();
+            File f = new File(inputFilePath);
+            T tmp = (T) u.unmarshal(f);
+            //TODO doing with object tmp
+        } catch (JAXBException ex) {
+            Logger.getLogger(Marshaller.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
 }

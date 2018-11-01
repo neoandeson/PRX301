@@ -190,6 +190,59 @@ public abstract class Parser {
         return result.substring(0, result.length() - 1);
     }
 
+    /**
+     * Get absolute content from next time tag 
+     * 
+     * @param XMLEventReader eventReader
+     * @param int nextTime
+     * @return String
+     */
+    protected String takeAbsoluteContentFromTargetReader(XMLEventReader eventReader, int nextTime) {
+        String result = "";
+        int depth = 0;
+        try {
+            for (int i = 0; i < nextTime; i++) {
+                eventReader.nextEvent();
+            }
+            
+            while (eventReader.hasNext()) {
+                // peek event
+                XMLEvent xmlEvent;
+                xmlEvent = eventReader.peek();
+
+                if (xmlEvent.isStartElement()) {
+                    ++depth;
+                } else if (xmlEvent.isEndElement()) {
+                    --depth;
+                    // reached END_ELEMENT tag?
+                    // break loop, leave event in stream
+                    if (depth < 0) {
+                        break;
+                    }
+                }
+                // skip first element event and next to second eslement
+                xmlEvent = eventReader.nextEvent();
+                // write src to list
+
+                if (xmlEvent.isCharacters()) {
+                    Characters se = xmlEvent.asCharacters();
+                    if (!se.getData().trim().isEmpty()) {
+                        //TODO uncomment
+                        //result += se.getData().trim() + "|";
+                        //TODO remove
+                        result += se.getData().trim() + "\n";
+                    }
+                }
+            }
+        } catch (XMLStreamException ex) {
+            Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (result.isEmpty()) {
+            return "";
+        }
+        return result.substring(0, result.length() - 1);
+    }
+    
     //TODO Unecessary remove
     public void parseHTML(String filePath, String desTag, String desAttr, String desAttrContent) {
         XMLInputFactory fact = XMLInputFactory.newInstance();
