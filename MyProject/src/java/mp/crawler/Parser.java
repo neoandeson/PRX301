@@ -96,7 +96,7 @@ public abstract class Parser {
      * TODO: implement to each parser
      * @param String inputFilePath
      */
-    public abstract void parsingHTML(String filePath);
+    public abstract void parsingHTML(String inputFilePath);
 
     /**
      * Processing and writing well-formed temporary file
@@ -373,11 +373,12 @@ public abstract class Parser {
                         String msgErrorString = "The element type \"";
                         if (msg.contains(msgErrorString)) {
                             String missingTagName = msg.substring(msg.indexOf(msgErrorString) + msgErrorString.length(), msg.indexOf("\" must be terminated"));
-                            try {
-                                writer.write("</" + missingTagName + ">");
-                            } catch (IOException ex) {
-                                Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-                            }
+                            //TODO Uncomment
+//                            try {
+//                                writer.write("</" + missingTagName + ">");
+//                            } catch (IOException ex) {
+//                                Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+//                            }
                         }
                     } catch (IOException ex) {
                         Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);

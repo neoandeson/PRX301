@@ -4,8 +4,10 @@
            targetNamespace="http://xml.netbeans.org/schema/perfume"
            xmlns="http://xml.netbeans.org/schema/perfume"
            xmlns:pd="http://xml.netbeans.org/schema/product"
+           xmlns:st="http://xml.netbeans.org/schema/style"
            elementFormDefault="qualified">
     <xs:import namespace="http://xml.netbeans.org/schema/product" schemaLocation="Product.xsd"/>
+    <xs:import namespace="http://xml.netbeans.org/schema/style" schemaLocation="Style.xsd"/>
     <xs:element name="Perfume">
         <xs:complexType>
             <xs:sequence>
@@ -20,10 +22,10 @@
                     </xs:simpleType>
                 </xs:element>
                 <xs:element name="Incense" type="xs:string"></xs:element>
-                <xs:element name="Style" type="xs:string"></xs:element>
-                <xs:element name="Description" type="xs:string"></xs:element>
+                <xs:element ref="st:Style" maxOccurs="5"></xs:element>
                 <xs:element ref="pd:Product"></xs:element>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+    
 </xs:schema>

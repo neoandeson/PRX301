@@ -24,7 +24,7 @@ import org.xml.sax.SAXParseException;
 public class XJCGenerateJavaObj {
 
     public static void main(String[] args) {
-        String[] schemas = new String[]{"Product.xsd", "Perfume.xsd", "Outfit.xsd"};
+        String[] schemas = new String[]{"Product.xsd", "Perfume.xsd", "Outfit.xsd", "Style.xsd"};
         try {
             String output = "src/java";
             SchemaCompiler sc = XJC.createSchemaCompiler();

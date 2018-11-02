@@ -27,8 +27,12 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+import mp.DAO.Perfum_has_StyleDAO;
 import mp.DAO.PerfumeDAO;
+import mp.DAO.StyleDAO;
 import mp.generatedObj.Perfume;
+import mp.generatedObj.Product;
+import mp.generatedObj.Style;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -65,7 +69,7 @@ public class MyUtils {
 
         if (m.find()) {
             result = m.group(0).trim();
-            System.out.println("result: " + result);
+            //System.out.println("getLineByPattern result: " + result);
             return result;
         }
         return result;
@@ -78,7 +82,7 @@ public class MyUtils {
 
         if (m.find()) {
             result = m.group(0).trim().replace(removeString, "");
-            System.out.println("getLineByPattern() result: " + result);
+            //System.out.println("getLineByPattern() result: " + result);
             return result;
         }
         return result;
@@ -122,11 +126,10 @@ public class MyUtils {
     public static String modifyToBeautifulHTML(String line) {
         // beautify inputline
         line = line.trim();
-        
+
 //        if (line.matches(".*&[^;]+")) {
 //            line = line.replaceAll("&", "&#38;");
 //        }
-
         if (line.contains("&amp;")) {
             line = line.replaceAll("&amp;", "&");
         }
@@ -136,6 +139,7 @@ public class MyUtils {
 
         line = line.replace("&raquo;", "");
         line = line.replaceAll("</br>", "&#45;");
+        line = line.replaceAll("<br/>", "&#45;");
         line = line.replaceAll("<br>", "&#45;");
         line = line.replaceAll("<br />", "&#45;");
         line = line.replaceAll("<b>", "&#45;");
@@ -170,32 +174,105 @@ public class MyUtils {
         if (line.contains("class=\"input-box\"")) {
             line = line.replace("class=\"input-box\"", "");
         }
+
+        return line;
+    }
+
+    public static String beautifyHTML(String line) {
+//        if (line.contains("<br>")) {
+//            line = line.replaceAll("<br>", "");
+//        }
+        if(line.contains("& ")){
+            line = line.replaceAll("& ", "và ");
+        } 
+        if(line.contains(" &amp; ")){
+            line = line.replaceAll(" &amp; ", " n ");
+        }
+        if (line.contains("&#8217;")) {
+            line = line.replaceAll("&#8217;", "`");
+        }
+        if (line.contains("&#038;")) {
+            line = line.replace("&#038;", "n");
+        }
+        if (line.contains("D&amp;G")) {
+            line = line.replace("D&amp;G", "DnG");
+        }
+        if (line.contains("Dolce &#038; Gabbana")) {
+            line = line.replace("Dolce &#038; Gabbana", "Dolce n Gabbana");
+        }
+        if (line.contains("Dolce &amp; Gabbana")) {
+            line = line.replace("Dolce &amp; Gabbana", "Dolce n Gabbana");
+        }
+        if (line.contains("&#8220;")) {
+            line = line.replace("&#8220;", "(");
+            line = line.replace("&#8221;", ")");
+        }
+        
+        if (line.contains("&amp;")) {
+            line = line.replaceAll("&amp;", "&");
+        } 
+        if (line.contains("&")) {
+            line = line.replaceAll("&", "&amp;amp;");
+        }
         
         return line;
     }
-    
-    public static <T> void validateXMLBeforeSaveToDatabase(T obj, String xmlFilePath, String xsdPath) throws IOException{
+
+    public static <T> boolean validateXMLBeforeSaveToDatabase(T obj, String xmlFilePath, String xsdPath) throws IOException {
         try {
             marshall(obj, xmlFilePath);
-            
+
             SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
             Schema schema = sf.newSchema(new File(xsdPath));
             InputSource source = new InputSource(new BufferedReader(new FileReader(xmlFilePath)));
             Validator validator = schema.newValidator();
             validator.validate(new SAXSource(source));
-            saveToDB(obj);
-        } catch (SAXException | FileNotFoundException | SQLException | NamingException ex) {
-            Logger.getLogger(MyUtils.class.getName()).log(Level.SEVERE, null, ex);
+            return true;
+        } catch (SAXException ex) {
+            //Logger.getLogger(MyUtils.class.getName()).log(Level.SEVERE, null, ex);
+            //TODO remove
+//            Perfume p = (Perfume)obj;
+//            System.out.println("imgURL: " + p.getProduct().getImageURL());
+            System.out.println("\nERROR validateXMLBeforeSaveToDatabase---------------------------");
+            System.out.println(ex.getMessage() + "\n");
+            return false;
         }
     }
-    
-    public static <T> void saveToDB(T obj) throws SQLException, NamingException {
-        if(obj.getClass() == Perfume.class){
-            PerfumeDAO dao = new PerfumeDAO();
-            dao.insert((Perfume)obj);
+
+    public static void savePerfumeDB(Perfume perfume) throws SQLException, NamingException {
+        StyleDAO styleDAO = null;
+        int perfumeId = 0;
+        int styleId = 0;
+
+        PerfumeDAO perfumeDAO = new PerfumeDAO();
+        Product product = perfume.getProduct();
+        Perfum_has_StyleDAO p_h_sDAO;
+
+        //Insert perfume
+        if (!perfumeDAO.isExist(product.getBrand(), product.getName(), product.isSex(),
+                product.getPrice().intValue(), perfume.getRelease(), perfume.getIncense())) {
+            perfumeDAO.insert(perfume);
+        }
+        //Insert style
+        styleDAO = new StyleDAO();
+        for (Style style : perfume.getStyle()) {
+            if (!styleDAO.isExist(style.getContent())) {
+                styleDAO.insert(style);
+            }
+
+            //Check perfumeId and styleId isExist and != 0
+            perfumeId = perfumeDAO.getId(product.getBrand(), product.getName(), product.isSex(),
+                    product.getPrice().intValue(), perfume.getRelease(), perfume.getIncense());
+            styleId = styleDAO.getId(style.getContent());
+            if (perfumeId != 0 && styleId != 0) {
+                p_h_sDAO = new Perfum_has_StyleDAO();
+                if (!p_h_sDAO.isExist(perfumeId, styleId)) {
+                    p_h_sDAO.insert(perfumeId, styleId);
+                }
+            }
         }
     }
-    
+
     public static <T> void marshall(T obj, String outputFilePath) {
         try {
             JAXBContext ctx = JAXBContext.newInstance(obj.getClass());
@@ -220,13 +297,14 @@ public class MyUtils {
             Logger.getLogger(Marshaller.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
-    public static BigInteger parseStringMoneyToBigInt(String strMoney) throws NumberFormatException{
+
+    public static BigInteger parseStringMoneyToBigInt(String strMoney) throws NumberFormatException {
         strMoney = strMoney.replaceAll("[.]", "");
-        return BigInteger.valueOf(Integer.parseInt(strMoney));
+        strMoney = strMoney.replaceAll("[VNĐ]", "");
+        return BigInteger.valueOf(Integer.parseInt(strMoney.trim()));
     }
-    
-    public static int parseStringToInt(String str){
+
+    public static int parseStringToInt(String str) {
         try {
             int tmp = Integer.parseInt(str);
             return tmp;
@@ -234,7 +312,7 @@ public class MyUtils {
             return 0;
         }
     }
-    
+
     public static boolean getBooleanSexValue(String strSex) {
         return strSex.toLowerCase().equals("nam") ? true : false;
     }

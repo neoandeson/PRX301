@@ -112,7 +112,7 @@ public class TGNHCrawler {
                                     isGetFirstImg = true;
                                     //System.out.println("img: " + detail);
                                     //TODO downImage to local set imgURL
-                                    perfume.getProduct().setImageURL(detail);
+                                    perfume.getProduct().setImageURL(Constant.GET_PRE_THEGIOINUOCHOA + detail);
                                 }
                                 inDivImage = false;
                             }
@@ -156,7 +156,7 @@ public class TGNHCrawler {
                                         break;
                                     case "Phong cách":
                                         //System.out.println(takeAbsoluteContentFromTargetReader(reader, 2));
-                                        perfume.setStyle(takeAbsoluteContentFromTargetReader(reader, 2));
+                                        //perfume.setStyle(takeAbsoluteContentFromTargetReader(reader, 2));
                                         break;
                                     default:
                                         break;
@@ -166,10 +166,10 @@ public class TGNHCrawler {
 
                             //Get desc
                             if (ele.getName().toString().equals("div")) {
-                                Attribute attr = ele.getAttributeByName(new QName("class"));
+                                Attribute attr = ele.getAttributeByName(new QName("id"));
 
                                 if (attr != null) {
-                                    if (attr.getValue().equals("desc")) {
+                                    if (attr.getValue().equals("text-more")) {
                                         inDivDescription = true;
                                     }
                                 }
@@ -177,7 +177,6 @@ public class TGNHCrawler {
                             if (ele.getName().toString().equals("p") && inDivDescription) {
                                 detail = takeAbsoluteContentFromreader(reader);
                                 //System.out.println("desc: " + detail);
-                                perfume.setDescription(detail);
                                 inDivDescription = false;
                             }
 
@@ -223,7 +222,7 @@ public class TGNHCrawler {
                             try {
                                 XMLEvent event = null;
                                 event = reader.nextEvent();
-                                
+
                                 if (event != null) {
                                     //System.out.println("event: " + event.toString());
                                     if (event.toString().contains("<?xml version")) {
@@ -231,7 +230,7 @@ public class TGNHCrawler {
                                     } else if (event.isStartElement()) {
                                         StartElement ele = (StartElement) event;
                                         if (ele.getName().toString().equals("section")) {
-                                            if (isFirstSection){
+                                            if (isFirstSection) {
                                                 break;
                                             }
                                             if (!isFirstSection) {
@@ -244,17 +243,21 @@ public class TGNHCrawler {
                                         } else if (ele.getName().toString().equals("script")) {
                                             inScriptTag = true;
                                         } else {
-                                            writer.write(event.toString() + "\n");
+                                            writer.write(MyUtils.modifyToBeautifulHTML(event.toString()) + "\n");
                                         }
                                     } else if (event.isEndElement()) {
                                         EndElement ele = (EndElement) event;
                                         if (ele.getName().toString().equals("p")) {
-                                            writer.write(pContent);
+                                            writer.write(MyUtils.modifyToBeautifulHTML(pContent));
                                             writer.write(event.toString());
                                             pContent = "";
                                             inPTag = false;
                                         } else if (ele.getName().toString().equals("script")) {
                                             inScriptTag = false;
+                                        } else if (ele.getName().toString().equals("img")) {
+                                            //not write 
+                                        } else if (ele.getName().toString().equals("input")) {
+                                            //not write 
                                         } else {
                                             writer.write(event.toString() + "\n");
                                         }
@@ -264,7 +267,7 @@ public class TGNHCrawler {
                                         } else if (inScriptTag) {
                                             //Not write
                                         } else {
-                                            writer.write(event.toString() + "\n");
+                                            writer.write(MyUtils.modifyToBeautifulHTML(event.toString()) + "\n");
                                         }
                                     }
 
@@ -274,17 +277,21 @@ public class TGNHCrawler {
                                 String msgErrorString = "The element type \"";
                                 if (msg.contains(msgErrorString)) {
                                     String missingTagName = msg.substring(msg.indexOf(msgErrorString) + msgErrorString.length(), msg.indexOf("\" must be terminated"));
-                                    try {
-                                        writer.write("</" + missingTagName + ">");
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
+                                    //TODO check img uncomment
+//                                    try {
+//                                        writer.write("</" + missingTagName + ">");
+//                                        System.out.println("missingTagName: " + missingTagName);
+//                                    } catch (IOException ex) {
+//                                        Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
+//                                    }
                                 }
                             } catch (IOException ex) {
                                 Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
                             } catch (NullPointerException e) {
                                 //End of file
                                 break;
+                            } catch (IllegalArgumentException e) {
+                                e.printStackTrace();
                             }
                         }
                     }
@@ -326,21 +333,12 @@ public class TGNHCrawler {
                     ArrayList<String> matchedGroup;
 
                     while ((inputLine = br.readLine()) != null) {
-                        matchedGroup = MyUtils.getGroupLineByPattern(inputLine, "<a class=\"product-name pro-color\"[a-zA-Z0-9 \\/\\-\\.\\=\\\"\\>]*</a>");
+                        matchedGroup = MyUtils.getGroupLineByPattern(inputLine, "<a href=\\\"[a-zA-Z0-9\\/\\-\\.]*\\\" class=\\\"product-item-thumb\\\">");
                         int count = 0;
                         for (String mg : matchedGroup) {
                             //get href content
                             mg = MyUtils.getLineByPattern(mg, "[\\/]+.*html");
                             downloadHTML(Constant.GET_PRE_THEGIOINUOCHOA + mg, Constant.NAME_THEGIOINUOCHOA_PAGE);
-                            
-                            break;//TODO remove
-//                            if (count++ == 2) {
-//                                //get href content
-//                                mg = MyUtils.getLineByPattern(mg, "[\\/]+.*html");
-//                                downloadHTML(Constant.GET_PRE_THEGIOINUOCHOA + mg, Constant.NAME_THEGIOINUOCHOA_PAGE);
-//                                break;
-//                            }
-
                         }
                     }
                 } catch (MalformedURLException ex) {

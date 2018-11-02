@@ -53,4 +53,12 @@ public class ObjectFactory {
         return new Perfume();
     }
 
+    /**
+     * Create an instance of {@link Style }
+     * 
+     */
+    public Style createStyle() {
+        return new Style();
+    }
+
 }

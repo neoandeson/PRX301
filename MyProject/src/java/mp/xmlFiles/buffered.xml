@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Perfume xmlns="http://xml.netbeans.org/schema/perfume" xmlns:ns2="http://xml.netbeans.org/schema/product">
+<Perfume xmlns="http://xml.netbeans.org/schema/perfume" xmlns:ns2="http://xml.netbeans.org/schema/style" xmlns:ns3="http://xml.netbeans.org/schema/product">
     <Type>Perfume</Type>
-    <Concentration>Eau de parfum</Concentration>
-    <Release>2009</Release>
-    <Incense>Hương Hoa cỏ Gỗ Xạ hương - Floral Woody Musk</Incense>
-    <Style>Nam tính, Quyến rũ, thu hút.</Style>
-    <Description>TGNH chào bạn!Bạn ơi hiện tại sản phẩm này có mùi hương dịu của phấn ,bạn có thể đến showroom tham khảo sản phẩm nha bạn.TGNH thân chào.</Description>
-    <ns2:Product>
-        <ns2:Brand>Narciso Rodriguez</ns2:Brand>
-        <ns2:Name>Narciso Rodriguez Musc Collection for men</ns2:Name>
-        <ns2:Sex>true</ns2:Sex>
-        <ns2:Origin>Mỹ</ns2:Origin>
-        <ns2:Price>2500000</ns2:Price>
-        <ns2:ImageURL>/uploads/products/2018/11/image/1541041269.0129.png</ns2:ImageURL>
-    </ns2:Product>
+    <Concentration>Eau De Toilette (EDT)</Concentration>
+    <Release>0</Release>
+    <Incense>Floral ( Hương Hoa, Phấn Thơm )</Incense>
+    <ns2:Style>
+        <ns2:Content>ấm áp</ns2:Content>
+    </ns2:Style>
+    <ns2:Style>
+        <ns2:Content>Nhẹ Nhàng</ns2:Content>
+    </ns2:Style>
+    <ns2:Style>
+        <ns2:Content>Quyến Rũ</ns2:Content>
+    </ns2:Style>
+    <ns3:Product>
+        <ns3:Brand>Victoria's Secret</ns3:Brand>
+        <ns3:Name>https://orchard.vn/wp-content/uploads/2014/06/Victoria-Secret-Pure-Seduction-30ml_i7a4-gf.jpg</ns3:Name>
+        <ns3:Sex>false</ns3:Sex>
+        <ns3:Price>1</ns3:Price>
+        <ns3:ImageURL>https://orchard.vn/wp-content/uploads/2014/06/Victoria-Secret-Pure-Seduction-30ml_i7a4-gf.jpg</ns3:ImageURL>
+    </ns3:Product>
 </Perfume>

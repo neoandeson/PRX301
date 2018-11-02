@@ -12,9 +12,15 @@ package mp.Utils;
 public class Constant {
 
     //URL for crawling
-    public static final String GET_URL_THEGIOINUOCHOA_MALE = "https://www.thegioinuochoa.com.vn/cho-nam/#price=0%2C0&sex=145&page=";
+    public static final String GET_URL_THEGIOINUOCHOA_MALE = "https://www.thegioinuochoa.com.vn/cho-nam/#price=0%2C0&sex=145&page=5";
     public static final String GET_URL_THEGIOINUOCHOA_FEMALE = "https://www.thegioinuochoa.com.vn/cho-nu/#price=0%2C0&sex=146&page=";
     public static final String GET_PRE_THEGIOINUOCHOA = "https://www.thegioinuochoa.com.vn";
+    
+    //public static final String URL_ORCHARD = "https://orchard.vn/gioi-tinh/nam/page/";
+    public static final String URL_ORCHARD_MALE = "https://orchard.vn/nuoc-hoa-nam/page/";
+    public static final String URL_ORCHARD_FEMALE = "https://orchard.vn/loai-nuoc-hoa/nu/page/";
+    public static final String URL_ORCHARD_DETAIL = "https://orchard.vn/san-pham/bvlgari-aqva-pour-homme/";
+    public static final String URL_PRE_ORCHARD = "https://orchard.vn/";
 
 //    public static final String GET_URL_PERFUMISTA = "https://perfumista.vn/nhom-nuoc-hoa-huong-thom-ngat";
 //    public static final String GET_URL_PERFUME168 = "https://perfume168.com/loai-nuoc-hoa/nuoc-hoa-nam/";
@@ -28,11 +34,12 @@ public class Constant {
     public static final String NAME_BUFFERED_PAGE = "buffered.html";
     public static final String NAME_BUFFERED_PAGE_XML = "buffered.xml";
     public static final String NAME_THEGIOINUOCHOA_PAGE = "thegioinuochoa.html";
+    public static final String NAME_ORCHARD_PAGE = "orchard.html";
     public static final String NAME_SCHEMA_PERFUME = "Perfume.xsd";
 
     //File path
-    public static final String PATH_HTML = "src/java/mp/htmlFiles";
-    public static final String PATH_XML = "src/java/mp/xmlFiles";
+    public static final String PATH_HTML = "src/java/mp/htmlFiles/";
+    public static final String PATH_XML = "src/java/mp/xmlFiles/";
     public static final String PATH_IMAGE = "content/imgs/";
     public static final String PATH_SCHEMA = "src/java/mp/schemas/";
 

@@ -26,11 +26,11 @@ import mp.Utils.MyUtils;
  *
  * @author ASUS
  */
-public class DownloadPage {
+public class DownloadOrchard {
 
     public static void main(String[] args) {
         //DOING: chinh sua ket hop bo parse trong luc crawl luon luu dung 1 file 
-        downloadingTheGioiNuocHoa2(Constant.GET_URL_THEGIOINUOCHOA_MALE, Constant.PATH_HTML, "", "");
+        downloadingTheGioiNuocHoa2("https://orchard.vn/san-pham/giorgio-armani-acqua-di-gio-profumo-pour-homme/", Constant.PATH_HTML, "", "");
     }
 
     public static void downloadingTheGioiNuocHoa2(String htmlURL, String filePath, String startTagProp, String endTagProp) {
@@ -71,14 +71,14 @@ public class DownloadPage {
                         try {
                             br.close();
                         } catch (IOException ex) {
-                            Logger.getLogger(DownloadPage.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DownloadOrchard.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                     if (is != null) {
                         try {
                             is.close();
                         } catch (IOException ex) {
-                            Logger.getLogger(DownloadPage.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DownloadOrchard.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }
@@ -100,11 +100,30 @@ public class DownloadPage {
                     writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(String.format("%s\\%s", filePath, fileName)), "UTF-8"));
 
                     String inputLine;
-                    boolean inTarget = false;
+                    String detail;
 
+                    writer.write("<div>\n");
                     while ((inputLine = br.readLine()) != null) {
-                        writer.write(inputLine + "\n");
+                        if (inputLine.contains("<div id=\"content\"")) {
+                            inputLine = MyUtils.beautifyHTML(inputLine);
+                            detail = MyUtils.getLineByPattern(inputLine, "<div class=\"product-thumb-wrap.*<div id=\"product-single-thumbnail").trim();
+                            detail = detail.substring(0, detail.lastIndexOf("<div"));
+                            writer.write(detail + "\n");
+
+                            detail = MyUtils.getLineByPattern(inputLine, "<h1 id=\"product-title\".*</h1>").trim();
+                            writer.write(detail + "\n");
+
+                            detail = MyUtils.getLineByPattern(inputLine, "<table class=\"shop_attributes.*<div class=\"col-md-6").trim();
+                            detail = detail.substring(0, detail.lastIndexOf("</div"));
+                            writer.write(detail + "\n");
+
+                            detail = MyUtils.getLineByPattern(inputLine, "<table class=\"product-variation-table.*</table>").trim();
+                            detail = detail.replace("<br>", "");
+                            writer.write(detail + "\n");
+                        }
+//                        writer.write(inputLine);
                     }
+                    writer.write("</div>");
                 } catch (MalformedURLException ex) {
                     Logger.getLogger(Downloader.class.getName()).log(Level.SEVERE, null, ex);
                 } catch (IOException ex) {
@@ -114,27 +133,27 @@ public class DownloadPage {
                         try {
                             writer.close();
                         } catch (IOException ex) {
-                            Logger.getLogger(DownloadPage.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DownloadOrchard.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                     if (br != null) {
                         try {
                             br.close();
                         } catch (IOException ex) {
-                            Logger.getLogger(DownloadPage.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DownloadOrchard.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                     if (is != null) {
                         try {
                             is.close();
                         } catch (IOException ex) {
-                            Logger.getLogger(DownloadPage.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(DownloadOrchard.class.getName()).log(Level.SEVERE, null, ex);
                         }
                     }
                 }
             }
         };
         //crawler.analysMainHTML();
-        crawler.downloadHTML(htmlURL, "tgnhMale.html");
+        crawler.downloadHTML(htmlURL, "orchard.html");
     }
 }

@@ -1,6 +1,8 @@
 
 package mp.generatedObj;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -29,8 +31,7 @@ import javax.xml.bind.annotation.XmlType;
  *           &lt;/simpleType>
  *         &lt;/element>
  *         &lt;element name="Incense" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Style" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Description" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element ref="{http://xml.netbeans.org/schema/style}Style" maxOccurs="5"/>
  *         &lt;element ref="{http://xml.netbeans.org/schema/product}Product"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -47,7 +48,6 @@ import javax.xml.bind.annotation.XmlType;
     "release",
     "incense",
     "style",
-    "description",
     "product"
 })
 @XmlRootElement(name = "Perfume")
@@ -61,10 +61,8 @@ public class Perfume {
     protected int release;
     @XmlElement(name = "Incense", required = true)
     protected String incense;
-    @XmlElement(name = "Style", required = true)
-    protected String style;
-    @XmlElement(name = "Description", required = true)
-    protected String description;
+    @XmlElement(name = "Style", namespace = "http://xml.netbeans.org/schema/style", required = true)
+    protected List<Style> style;
     @XmlElement(name = "Product", namespace = "http://xml.netbeans.org/schema/product", required = true)
     protected Product product;
 
@@ -159,49 +157,34 @@ public class Perfume {
     /**
      * Gets the value of the style property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getStyle() {
-        return style;
-    }
-
-    /**
-     * Sets the value of the style property.
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the style property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setStyle(String value) {
-        this.style = value;
-    }
-
-    /**
-     * Gets the value of the description property.
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getStyle().add(newItem);
+     * </pre>
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Sets the value of the description property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link Style }
+     * 
+     * 
      */
-    public void setDescription(String value) {
-        this.description = value;
+    public List<Style> getStyle() {
+        if (style == null) {
+            style = new ArrayList<Style>();
+        }
+        return this.style;
+    }
+    
+    public void setStyle(ArrayList<Style> styles) {
+        this.style = styles;
     }
 
     /**

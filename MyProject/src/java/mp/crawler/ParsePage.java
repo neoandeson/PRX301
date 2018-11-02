@@ -56,8 +56,7 @@ public class ParsePage {
             perfume.setConcentration("Eau de parfum");
             perfume.setRelease(MyUtils.parseStringToInt("1999"));
             perfume.setIncense("Nhóm gỗ");
-            perfume.setStyle("Thanh lịch");
-            perfume.setDescription("asdasdasdasdasdasda&ădawdasda");
+            //perfume.setStyle("Thanh lịch");
 
             MyUtils.validateXMLBeforeSaveToDatabase(perfume, Constant.PATH_XML + "/" + "temp.xml", Constant.PATH_SCHEMA + "Perfume.xsd");
 //OK TODO uncomment
@@ -225,6 +224,7 @@ public class ParsePage {
                                     String missingTagName = msg.substring(msg.indexOf(msgErrorString) + msgErrorString.length(), msg.indexOf("\" must be terminated"));
                                     try {
                                         writer.write("</" + missingTagName + ">");
+                                        System.out.println("missingTagName2: " + missingTagName);
                                     } catch (IOException ex) {
                                         Logger.getLogger(Parser.class.getName()).log(Level.SEVERE, null, ex);
                                     }
